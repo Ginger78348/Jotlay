@@ -109,9 +109,11 @@ exe — so moving or rebuilding the app never touches your notes.
 
 Right-click the tray icon → **Change hotkey**, click the box, press the combo,
 Save. If the combo is already taken by something else, you get a warning and your
-existing hotkey keeps working. Two modifiers off the crowded Ctrl / Ctrl+Shift
-zone (like `Ctrl+Alt+J`) collide least; avoid `Win+` combos, which Windows
-reserves.
+existing hotkey keeps working. Common editing shortcuts (`Ctrl+C`, `Ctrl+V`,
+`Ctrl+Z`, and similar) are refused, so Jotlay can't hijack copy/paste globally —
+add a second modifier like `Ctrl+Alt+C` if you want one of those keys. Two
+modifiers off the crowded Ctrl / Ctrl+Shift zone (like `Ctrl+Alt+J`) collide
+least; avoid `Win+` combos, which Windows reserves.
 
 ---
 
