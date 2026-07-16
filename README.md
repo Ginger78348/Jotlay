@@ -8,7 +8,7 @@ over everything, waiting.
 
 ![Jotlay in action](assets/demo.gif)
 
-Default hotkey: **Ctrl+Alt+J** (changeable during install or anytime after).
+Default hotkey: **Ctrl+Alt+J** (changeable anytime from the tray).
 
 ---
 

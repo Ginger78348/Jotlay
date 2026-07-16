@@ -10,8 +10,8 @@ internal static class Program
     static void Main(string[] args)
     {
         // Advanced/manual path: "Jotlay.exe --set-hotkey ctrl+alt+j" validates and
-        // stores the setting, then exits without launching the tray. Not part of the
-        // normal install flow — the installer never calls this.
+        // stores the setting, then exits without launching the tray. Purely a
+        // scripting convenience — the tray Settings dialog is the normal way.
         if (args.Length >= 2 && args[0].Equals("--set-hotkey", StringComparison.OrdinalIgnoreCase))
         {
             SetHotkeyFromCli(args[1]);
