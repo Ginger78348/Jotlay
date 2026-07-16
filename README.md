@@ -143,9 +143,7 @@ being driven by a WinForms popup.
 
 Ideas that would be natural to build:
 
-- A **browse/search window** — scroll and search past notes right from the tray,
-  no export step.
-- **Tag colors** or per-bucket icons in the picker.
+- **Tag colors** or per-bucket icons in the notes window.
 - **Sync** — point the SQLite file at a synced folder, or add a proper backend.
 - **An Android or web front-end** that reuses the `Database`/`Router` core, so the
   same buckets are live on your phone.
@@ -183,7 +181,7 @@ space or a real prefix (`link: http://…`) if you want them elsewhere.
 | File | What it does |
 |------|--------------|
 | `Program.cs` | Entry point, single-instance guard, `--set-hotkey` CLI |
-| `TrayAppContext.cs` | Tray icon, menu, hotkey wiring, export, autostart |
+| `TrayAppContext.cs` | Tray icon, menu, hotkey wiring, autostart |
 | `HotkeyManager.cs` | Registers the global hotkey with Windows |
 | `Hotkey.cs` | Shared hotkey parsing + validation (used by settings and CLI) |
 | `CaptureForm.cs` | The popup input box |
@@ -194,15 +192,6 @@ space or a real prefix (`link: http://…`) if you want them elsewhere.
 | `Jotlay.csproj` | Project file — build config and the SQLite dependency |
 
 Built with C# and WinForms on .NET 8. Storage via `Microsoft.Data.Sqlite`.
-
----
-
-## Recording the demo
-
-To make the GIF at the top: install [ScreenToGif](https://www.screentogif.com/)
-(free), record a short loop — press the hotkey, type `idea: ship the newsletter`,
-hit Enter, show it vanish — trim to ~3 seconds, export as `assets/demo.gif`, and
-uncomment the image line near the top of this file.
 
 ---
 
