@@ -1,10 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
@@ -126,7 +123,7 @@ public sealed class TrayAppContext : ApplicationContext
         menu.Items.Add(auto);
 
         menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("Export notes to Markdown\u2026", null, (_, _) => ExportMarkdown());
+        menu.Items.Add("Browse notes\u2026", null, (_, _) => OpenNotes());
         menu.Items.Add("Show database file", null, (_, _) =>
             Process.Start("explorer.exe", $"/select,\"{_db.DbPath}\""));
 
@@ -157,60 +154,26 @@ public sealed class TrayAppContext : ApplicationContext
         RefreshMenu();
     }
 
-    // ---- export ----------------------------------------------------------
+    // ---- notes window ----------------------------------------------------
 
-    private void ExportMarkdown()
+    private NotesWindow? _notesWindow;
+
+    private void OpenNotes()
     {
-        var buckets = _db.Buckets();
-        if (buckets.Count == 0)
+        // Reuse a single window instance; bring it forward if already open.
+        if (_notesWindow is { IsDisposed: false })
         {
-            _tray.ShowBalloonTip(2000, "Jotlay", "No notes to export yet.", ToolTipIcon.Info);
+            if (_notesWindow.WindowState == FormWindowState.Minimized)
+                _notesWindow.WindowState = FormWindowState.Normal;
+            _notesWindow.Activate();
+            _notesWindow.BringToFront();
             return;
         }
 
-        using var picker = new BucketPickerForm(buckets);
-        if (picker.ShowDialog() != DialogResult.OK || picker.Selected.Count == 0) return;
-
-        using var fbd = new FolderBrowserDialog
-        {
-            Description = "Choose a folder for the exported .md files"
-        };
-        if (fbd.ShowDialog() != DialogResult.OK) return;
-
-        int written = 0;
-        try
-        {
-            foreach (var bucket in picker.Selected)
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine($"# {bucket}");
-                sb.AppendLine();
-                foreach (var n in _db.NotesInBucket(bucket))
-                {
-                    var local = DateTime.Parse(n.CreatedUtc).ToLocalTime();
-                    // Keep continuation lines inside the bullet so multi-line notes
-                    // don't break Markdown list formatting.
-                    string body = n.Body.Replace("\r\n", "\n").Replace("\n", "\n  ");
-                    sb.AppendLine($"- [{local:yyyy-MM-dd HH:mm}] {body}");
-                }
-
-                // Bucket names are already restricted to safe characters, but sanitize anyway.
-                string safe = string.Join("_", bucket.Split(Path.GetInvalidFileNameChars()));
-                File.WriteAllText(Path.Combine(fbd.SelectedPath, safe + ".md"), sb.ToString());
-                written++;
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                "Jotlay couldn't finish the export:\n\n" + ex.Message,
-                "Jotlay", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return;
-        }
-
-        _tray.ShowBalloonTip(2500, "Jotlay",
-            $"Exported {written} file(s) to the chosen folder.", ToolTipIcon.Info);
-        Process.Start("explorer.exe", fbd.SelectedPath);
+        _notesWindow = new NotesWindow(_db);
+        _notesWindow.FormClosed += (_, _) => _notesWindow = null;
+        _notesWindow.Show();
+        _notesWindow.Activate();
     }
 
     // ---- icon + exit -----------------------------------------------------

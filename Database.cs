@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.Data.Sqlite;
 
 namespace Jotlay;
@@ -124,6 +125,33 @@ public sealed class Database
         while (r.Read())
             list.Add(new NoteRow(r.GetInt64(0), r.GetString(1), r.GetString(2), r.GetString(3)));
         return list;
+    }
+
+    /// <summary>Permanently deletes the given notes by id. Returns how many rows were removed.</summary>
+    public int DeleteNotes(IEnumerable<long> ids)
+    {
+        var idList = ids.ToList();
+        if (idList.Count == 0) return 0;
+
+        using var conn = new SqliteConnection(_connString);
+        conn.Open();
+        using var tx = conn.BeginTransaction();
+        int removed = 0;
+        using (var cmd = conn.CreateCommand())
+        {
+            cmd.Transaction = tx;
+            cmd.CommandText = "DELETE FROM notes WHERE id = $id";
+            var p = cmd.CreateParameter();
+            p.ParameterName = "$id";
+            cmd.Parameters.Add(p);
+            foreach (var id in idList)
+            {
+                p.Value = id;
+                removed += cmd.ExecuteNonQuery();
+            }
+        }
+        tx.Commit();
+        return removed;
     }
 }
 

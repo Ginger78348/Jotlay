@@ -6,12 +6,7 @@ type a thought, hit Enter, and it's filed. No window to find, no app to switch
 to, no losing your place. The name is *jot* + *overlay*: it's a layer that sits
 over everything, waiting.
 
-<!--
-  DEMO GIF GOES HERE.
-  Record a ~3 second loop on your machine (see "Recording the demo" below),
-  save it as assets/demo.gif, and replace this comment with:
-  ![Jotlay in action](assets/demo.gif)
--->
+![Jotlay in action](assets/demo.gif)
 
 Default hotkey: **Ctrl+Alt+J** (changeable during install or anytime after).
 
@@ -96,11 +91,16 @@ a loose thought with no prefix                  ->  bucket "inbox"
 The arrow at the bottom of the box (`→ work`) shows the target bucket live as you
 type, so you see where it's going before you commit.
 
-### Getting notes back out
+### Browsing, exporting, and deleting notes
 
-Right-click the tray icon → **Export notes to Markdown**. Tick the buckets you
-want from the checklist, choose a folder, and Jotlay writes **one `.md` file per
-bucket** (`work.md`, `idea.md`, …), each with its notes and timestamps.
+Right-click the tray icon → **Browse notes**. This opens a window listing every
+note individually, with a bucket filter and a search box to narrow the list. Tick
+the notes you want and:
+
+- **Export** writes the selected notes to Markdown — one `.md` file per bucket
+  (`work.md`, `idea.md`, …), each with timestamps.
+- **Delete** permanently removes the selected notes (with a confirmation, since
+  it can't be undone).
 
 Notes live in a SQLite database at `%AppData%\Jotlay\jotlay.db`, separate from the
 exe — so moving or rebuilding the app never touches your notes.
@@ -188,7 +188,7 @@ space or a real prefix (`link: http://…`) if you want them elsewhere.
 | `Hotkey.cs` | Shared hotkey parsing + validation (used by settings and CLI) |
 | `CaptureForm.cs` | The popup input box |
 | `SettingsForm.cs` | Hotkey-change dialog |
-| `BucketPickerForm.cs` | Checklist for choosing buckets to export |
+| `NotesWindow.cs` | Browse, search, export, and delete individual notes |
 | `Database.cs` | SQLite storage (notes + settings) |
 | `Router.cs` | Parses `bucket: body` prefix routing |
 | `Jotlay.csproj` | Project file — build config and the SQLite dependency |
